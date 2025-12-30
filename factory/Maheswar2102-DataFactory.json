@@ -1,0 +1,9 @@
+{
+	"name": "Maheswar2102-DataFactory",
+	"location": "eastus",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "6873b4df-7bf6-40d7-a77f-817bc442292c",
+		"tenantId": "64ac4445-7120-4176-aab1-8cf42bb285bf"
+	}
+}

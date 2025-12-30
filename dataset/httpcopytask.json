@@ -1,0 +1,23 @@
+{
+	"name": "httpcopytask",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Http Copy Linkservice",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "Mahesh2102/Azure_Datfactory/refs/heads/main/Fact_Sales_2.csv"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	},
+	"type": "Microsoft.DataFactory/factories/datasets"
+}

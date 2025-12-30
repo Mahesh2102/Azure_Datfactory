@@ -1,0 +1,89 @@
+{
+	"name": "Transform_csv",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "HttpSink",
+						"type": "DatasetReference"
+					},
+					"name": "Sourcecsv"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "Dataflowsink",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [
+				{
+					"name": "select1"
+				},
+				{
+					"name": "filter1"
+				},
+				{
+					"name": "aggregate1"
+				},
+				{
+					"name": "split1"
+				},
+				{
+					"name": "derivedColumn1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          transaction_id as short,",
+				"          transactional_date as timestamp,",
+				"          product_id as string,",
+				"          customer_id as short,",
+				"          payment as string,",
+				"          credit_card as long,",
+				"          loyalty_card as boolean,",
+				"          cost as double,",
+				"          quantity as short,",
+				"          price as double,",
+				"          {_c10} as string",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> Sourcecsv",
+				"filter1 select(mapColumn(",
+				"          transaction_id,",
+				"          transactional_date,",
+				"          product_id,",
+				"          customer_id,",
+				"          payment,",
+				"          credit_card,",
+				"          loyalty_card,",
+				"          cost,",
+				"          quantity,",
+				"          price,",
+				"          {_c10}",
+				"     ),",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> select1",
+				"split1@VisaandMasercard filter(or (payment=='visa',payment=='mastercard')) ~> filter1",
+				"derivedColumn1 aggregate(groupBy(payment),",
+				"     price = sum(price)) ~> aggregate1",
+				"Sourcecsv split(or(payment=='visa',payment=='mastercard'),",
+				"     disjoint: false) ~> split1@(VisaandMasercard, other)",
+				"select1 derive(payment = coalesce(payment,'N/A')) ~> derivedColumn1",
+				"aggregate1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> sink1"
+			]
+		}
+	}
+}
